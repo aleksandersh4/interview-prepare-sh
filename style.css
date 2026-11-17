@@ -1,0 +1,52 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto; max-width: 920px; padding: 28px 24px 80px;
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #fafbfd; color: #1f2430;
+}
+h1 { font-size: 22px; margin: 0 0 6px; }
+.subtitle { margin: 0 0 18px; color: #5a6274; font-size: 14px; }
+code { background: #eceff5; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+nav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; }
+.topic-link {
+  text-decoration: none; font-size: 13px; padding: 6px 11px;
+  border-radius: 6px; background: #e8ebf2; color: #333c55;
+}
+.topic-link:hover { background: #dde2ee; }
+.topic-link.active { background: #2f5cff; color: #fff; }
+
+#topic-title { font-size: 17px; margin: 0 0 10px; }
+
+/* Песочница для DOM-задач (тема 10): видна, только когда тема её наполнит */
+#sandbox {
+  display: none; margin: 10px 0 16px; padding: 12px;
+  border: 2px dashed #b9c0d4; border-radius: 8px;
+}
+#sandbox:not(:empty) { display: block; }
+#sandbox:not(:empty)::before {
+  content: "DOM sandbox"; display: block; margin-bottom: 8px;
+  font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #8a93a8;
+}
+#sandbox ul { margin: 4px 0; padding-left: 22px; }
+#sandbox li { cursor: default; }
+#sandbox li.done { text-decoration: line-through; opacity: 0.6; }
+#sandbox button { margin: 0 3px; }
+
+#output {
+  font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+  font-size: 13px; line-height: 1.55;
+}
+.line { padding: 1px 0; white-space: pre-wrap; }
+.line.log, .line.info { color: #333a4a; }
+.line.warn { color: #8a6d00; }
+.line.error { color: #c0392b; }
+.line.muted { color: #98a0b3; }
+.line.ok { color: #1e8e3e; }
+.line.fail { color: #c0392b; font-weight: 600; }
+.line.fail .hint { font-weight: 400; color: #8a6d00; }
+.section {
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px; margin: 22px 0 6px; padding-bottom: 3px;
+  border-bottom: 2px solid #2f5cff;
+}
