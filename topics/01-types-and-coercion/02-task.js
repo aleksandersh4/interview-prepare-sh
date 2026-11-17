@@ -1,11 +1,10 @@
 section('Задача 2. getType без сюрпризов');
-// Верни строку: 'null' для null, 'array' для массивов, 'function' для функций,
-// для остального — обычный typeof ('number', 'string', 'object', ...).
-// ▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ ▼▼▼
+
 function getType(value) {
-  // TODO
+  // ▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ ▼▼▼
 }
-// ▲▲▲ КОНЕЦ КОДА · ниже проверки, не меняй ▲▲▲
+
+
 check('getType(null)', getType(null), 'null');
 check('getType([1, 2])', getType([1, 2]), 'array');
 check('getType(NaN)', getType(NaN), 'number');

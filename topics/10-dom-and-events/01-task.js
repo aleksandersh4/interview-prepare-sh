@@ -1,13 +1,11 @@
 section('Задача 1. Делегирование списка');
 const sandbox = document.getElementById('sandbox');
 
-// Один обработчик на ul: клик по li добавляет ему класс 'done'.
-// Помни: клик может попасть во вложенный элемент — используй e.target.closest('li').
-// ▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ ▼▼▼
 function setupListDelegation(ul) {
-  // TODO
+  // ▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ ▼▼▼
 }
-// ▲▲▲ КОНЕЦ КОДА · ниже проверки, не меняй ▲▲▲
+
+
 const list = document.createElement('ul');
 ['Купить молоко', 'Позвонить маме', 'Написать резюме'].forEach((text) => {
   const li = document.createElement('li');

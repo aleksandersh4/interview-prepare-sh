@@ -1,5 +1,7 @@
 section('Демо: потеря контекста');
+
 function safeCall(f) { try { return f(); } catch (e) { return 'TypeError: ' + e.message; } }
+
 
 const user = {
   name: 'Аня',

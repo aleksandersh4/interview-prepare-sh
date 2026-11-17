@@ -1,15 +1,18 @@
 section('Задача 4. Свой instanceof');
-// Иди по цепочке прототипов obj (Object.getPrototypeOf) и сравнивай
-// с Ctor.prototype. Конец цепочки — null.
-// ▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ ▼▼▼
+
 function myInstanceof(obj, Ctor) {
-  // TODO
+  // ▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ ▼▼▼
 }
-// ▲▲▲ КОНЕЦ КОДА · ниже проверки, не меняй ▲▲▲
+
 
 // Проверочная иерархия для тестов (не зависит от задачи 2):
+
 function Alpha() {}
+
+
 function Beta() {}
+
+
 Beta.prototype = Object.create(Alpha.prototype);
 
 check('myInstanceof(new Beta(), Beta)', myInstanceof(new Beta(), Beta), true);

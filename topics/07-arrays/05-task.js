@@ -1,10 +1,10 @@
 section('Задача 5. groupBy');
-// groupBy(arr, fn) → объект { [ключ]: [элементы] }, ключ возвращает fn(item).
-// ▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ ▼▼▼
+
 function groupBy(arr, fn) {
-  // TODO
+  // ▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ ▼▼▼
 }
-// ▲▲▲ КОНЕЦ КОДА · ниже проверки, не меняй ▲▲▲
+
+
 const people = [
   { name: 'Аня', dept: 'front' },
   { name: 'Борис', dept: 'back' },

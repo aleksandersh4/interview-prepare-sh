@@ -43,6 +43,7 @@ globalThis.setTimeout = () => 0;
 globalThis.clearTimeout = () => {};
 globalThis.setInterval = () => 0;
 globalThis.queueMicrotask = () => {};
+globalThis.__CARD_CHECKER__ = true; // карточки могут проверять и не ходить в сеть при офлайн-прогоне
 
 const noop = () => {};
 const helpers = { section: noop, log: noop, check: noop, tryRun: (fn) => fn() };

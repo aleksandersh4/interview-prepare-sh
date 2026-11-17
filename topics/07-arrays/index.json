@@ -2,32 +2,51 @@
   {
     "file": "01-task.js",
     "title": "Задача 1. Свой map",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `myMap(arr, fn)` — свой `map`: возвращает **новый** массив, где каждый элемент — `fn(item, index)`. Вход не менять; пустой массив → пустой массив.",
+    "source": "Полифилл map — must-have первых экранов"
   },
   {
     "file": "02-task.js",
     "title": "Задача 2. Свой reduce",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `myReduce(arr, fn, initial)` — свой `reduce`. Подпись колбэка: `fn(acc, item, index)`. Если `initial` не передан — аккумулятором становится первый элемент.",
+    "source": "Полифилл reduce — спрашивают вместе с map"
   },
   {
     "file": "03-task.js",
     "title": "Задача 3. unique",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `unique(arr)` — убрать повторы, сохранив порядок первых вхождений:\n\n`unique([1, 2, 1, 3, 2])` → `[1, 2, 3]`",
+    "source": "Дедупликация массива — базовая задача всех банков"
   },
   {
     "file": "04-task.js",
     "title": "Задача 4. flatten и flattenDeep",
-    "kind": "task"
+    "kind": "task",
+    "description": "Две задачи про вложенность:\n\n- `flatten(arr)` — развернуть на **один** уровень: `[1, [2, 3], [4, [5]]]` → `[1, 2, 3, 4, [5]]`\n- `flattenDeep(arr)` — до конца: `[1, [2, [3, [4]]]]` → `[1, 2, 3, 4]`",
+    "source": "flatten/flat — есть в банках задач (polyfill для flat)"
   },
   {
     "file": "05-task.js",
     "title": "Задача 5. groupBy",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `groupBy(arr, fn)` — группировку в объект: `fn(item)` возвращает ключ, под ним копится массив элементов с этим ключом. Пример: разбить людей по отделам или числа по чётности.",
+    "source": "groupBy — типовая задача на reduce"
   },
   {
     "file": "06-task.js",
     "title": "Задача 6. chunk",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `chunk(arr, size)` — нарезать массив кусками по `size`; последний кусок может быть короче:\n\n`chunk([1, 2, 3, 4, 5], 2)` → `[[1, 2], [3, 4], [5]]`",
+    "source": "chunk — типовая задача всех сборников"
+  },
+  {
+    "file": "08-task.js",
+    "title": "Задача 7. sortBy без мутации",
+    "kind": "task",
+    "description": "Напиши `sortBy(items, key)` — возвращает **новый** массив объектов, отсортированный по полю `key` по возрастанию. Исходный массив не мутировать (вспомни `[...arr].sort()` и стабильность сортировки).",
+    "source": "Сортировка объектов — реальная CRUD-задача, спрашивают с компаратором"
   },
   {
     "file": "07-demo.js",

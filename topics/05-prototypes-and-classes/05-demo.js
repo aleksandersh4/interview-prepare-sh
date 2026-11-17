@@ -1,9 +1,14 @@
 section('Демо: где живут методы');
 // Своя мини-иерархия для демо (не зависит от карточек-задач):
+
 function DemoAnimal(name) { this.name = name; }
+
+
 class DemoDog extends DemoAnimal {
   bark() { return 'Гав!'; }
 }
+
+
 const dog = new DemoDog('Рекс');
 
 log('dog.bark принадлежит прототипу, не объекту:', dog.hasOwnProperty('bark') === false);

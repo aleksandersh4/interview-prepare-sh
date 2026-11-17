@@ -1,12 +1,11 @@
 section('Задача 3. retry(fn, attempts, delayMs)');
-// Вызывай fn (возвращает промис), пока не успех или не исчерпаны попытки.
-// Между попытками пауза delayMs. Исчерпаны — reject с ПОСЛЕДНЕЙ ошибкой.
-// ▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ ▼▼▼
+
 function retry(fn, attempts, delayMs) {
-  // TODO
+  // ▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ ▼▼▼
   return Promise.resolve(); // заглушка
 }
-// ▲▲▲ КОНЕЦ КОДА · ниже проверки, не меняй ▲▲▲
+
+
 let tries = 0;
 const flaky = () => { tries++; return tries < 3 ? Promise.reject(new Error('fail ' + tries)) : Promise.resolve('ок'); };
 retry(flaky, 5, 10).then((r) => {

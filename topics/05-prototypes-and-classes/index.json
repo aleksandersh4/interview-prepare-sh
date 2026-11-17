@@ -2,22 +2,37 @@
   {
     "file": "01-task.js",
     "title": "Задача 1. Свой new",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `myNew(Ctor, ...args)` — свой оператор `new`. Пошагово, как движок:\n\n1. создать пустой объект\n2. поставить ему прототип `Ctor.prototype`\n3. вызвать `Ctor` с `this` = новый объект\n4. вернуть новый объект (если конструктор сам не вернул объект — тогда его)",
+    "source": "«Что делает new» + «напишите свой new» — обязательная связка про прототипы"
   },
   {
     "file": "02-task.js",
     "title": "Задача 2. Наследование на прототипах (ES5)",
-    "kind": "task"
+    "kind": "task",
+    "description": "Дано: конструктор `Animal` с методом `introduce` на прототипе. Допиши `Dog` так, чтобы:\n\n1. конструктор `Animal` вызывался с правильным `this`\n2. прототипы были связаны — методы `Animal` доступны у `Dog`\n3. у `Dog` появился метод `bark()` → `'Гав!'`\n4. `dog instanceof Dog` и `dog instanceof Animal` — оба `true`",
+    "source": "Наследование ES5 без классов — классика, которую до сих пор просят"
   },
   {
     "file": "03-task.js",
     "title": "Задача 3. То же через class / extends",
-    "kind": "task"
+    "kind": "task",
+    "description": "Дано: класс `AnimalC` с методом `introduce()`. Допиши `DogC extends AnimalC`:\n\n- конструктор принимает `(name, breed)`, вызывает `super(name)` и сохраняет `breed`\n- метод `bark()` → `'Гав!'`",
+    "source": "extends/super — базовый вопрос про классы"
   },
   {
     "file": "04-task.js",
     "title": "Задача 4. Свой instanceof",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `myInstanceof(obj, Ctor)` — свой `instanceof`: иди по цепочке прототипов `obj` (через `Object.getPrototypeOf`) и проверь, встречается ли где-то `Ctor.prototype`. Конец цепочки — `null`.",
+    "source": "«Как работает instanceof» + ручная реализация — обычный follow-up"
+  },
+  {
+    "file": "06-task.js",
+    "title": "Задача 5. Свой Object.create",
+    "kind": "task",
+    "description": "Напиши `objectCreate(proto)`: возвращает **пустой** объект, у которого `proto` стоит в цепочке прототипов (`Object.getPrototypeOf(obj) === proto`).\n\nВариант `{ __proto__: proto }` — читерство: сделай через функцию-конструктор с `prototype`.",
+    "source": "Реализация Object.create — частый сосед задачи про new"
   },
   {
     "file": "05-demo.js",

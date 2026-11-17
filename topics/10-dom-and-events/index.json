@@ -2,22 +2,38 @@
   {
     "file": "01-task.js",
     "title": "Задача 1. Делегирование списка",
-    "kind": "task"
+    "kind": "task",
+    "description": "Повесь **один** обработчик на `ul` (делегирование): клик по любому `li` добавляет ему класс `done`.\n\nКлик может прилететь во вложенный тег — поэтому ищи `e.target.closest('li')`. Тест кликает по элементам сам.",
+    "source": "Делегирование — топ-вопрос DOM-части любого интервью"
   },
   {
     "file": "02-task.js",
     "title": "Задача 2. Счётчик: две кнопки, один обработчик",
-    "kind": "task"
+    "kind": "task",
+    "description": "Повесь один обработчик на контейнер `panel` (делегирование): кнопка с `data-action=\"inc\"` увеличивает число в `span`, с `data-action=\"dec\"` — уменьшает. Кнопку ищи через `e.target.closest('[data-action]')`.",
+    "source": "data-атрибуты + делегирование — реальный паттерн SPA"
   },
   {
     "file": "03-task.js",
     "title": "Задача 3. Debounce на input",
-    "kind": "task"
+    "kind": "task",
+    "description": "Повесь на поле обработчик события `input`, но реальный поиск (`onSearch`) должен срабатывать **один раз** — через 50 мс после последнего ввода.\n\nПо сути: напиши debounce прямо в этой карточке (карточки не видят код друг друга).",
+    "source": "Поиск с debounce — самая частая DOM-задача (в связке с темой 02)",
+    "sourceUrl": "https://www.greatfrontend.com/questions/javascript/debounce"
   },
   {
     "file": "04-task.js",
     "title": "Задача 4. CustomEvent с данными",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `emitReady(target)`: создаёт и отправляет на `target` событие `'app:ready'` с данными `detail: { ok: true }`. Слушатель получит их в `e.detail`.",
+    "source": "CustomEvent + detail — средне-частый вопрос про события"
+  },
+  {
+    "file": "06-task.js",
+    "title": "Задача 5. Клик вне элемента",
+    "kind": "task",
+    "description": "Напиши `onClickOutside(el, handler)`: подписывается на клики по `document` и вызывает `handler`, только если клик прошёл **вне** `el`, включая его детей (проверь `el.contains(e.target)`). Классика для закрытия попапов.",
+    "source": "onClickOutside — есть в каталогах задач (GreatFrontend); закрытие попапов"
   },
   {
     "file": "05-demo.js",

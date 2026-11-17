@@ -30,20 +30,33 @@
     article.className = 'task-card' + (meta.kind === 'demo' ? ' demo' : '');
     article.innerHTML =
       '<h3></h3>' +
-      '<div class="task-body">' +
-      '  <div class="task-editor"></div>' +
-      '  <div class="task-side">' +
-      '    <div class="toolbar">' +
-      '      <button class="primary run-btn" type="button">▶ Запустить</button>' +
-      '      <button class="save-btn" type="button"' + (FS_OK ? '' : ' disabled') + '>💾 В файл</button>' +
-      '      <button class="reload-btn" type="button" title="Перечитать файл и выполнить">⟲ Из файла</button>' +
-      '    </div>' +
-      '    <div class="status"><span class="s-draft">черновик: —</span><span class="s-file">файл: —</span></div>' +
-      '    <div class="task-output"></div>' +
-      '    <div class="draft-note" hidden>Черновик отличается от файла. <button class="take-draft" type="button">Открыть черновик</button></div>' +
-      '  </div>' +
-      '</div>';
+      '<div class="task-desc md"></div>' +
+      '<div class="task-editor"></div>' +
+      '<div class="toolbar">' +
+      '  <button class="primary run-btn" type="button">▶ Запустить <kbd>Ctrl+Enter</kbd></button>' +
+      '  <button class="save-btn" type="button"' + (FS_OK ? '' : ' disabled') + '>💾 В файл</button>' +
+      '  <button class="reload-btn" type="button" title="Перечитать файл и выполнить">⟲ Из файла</button>' +
+      '</div>' +
+      '<div class="status"><span class="s-draft">черновик: —</span><span class="s-file">файл: —</span></div>' +
+      '<div class="task-output"></div>' +
+      '<div class="draft-note" hidden>Черновик отличается от файла. <button class="take-draft" type="button">Открыть черновик</button></div>';
     article.querySelector('h3').textContent = (meta.kind === 'demo' ? '👀 ' : '📝 ') + meta.title;
+    const descEl = article.querySelector('.task-desc');
+    if (window.marked) {
+      const desc = meta.description || (meta.kind === 'demo'
+        ? 'Запусти и разбери вывод: объясни себе (или ассистенту в чате) каждый шаг. Код менять не нужно.'
+        : '');
+      descEl.innerHTML = window.marked.parse(desc);
+      if (meta.source) {
+        const src = document.createElement('div');
+        src.className = 'task-source';
+        src.innerHTML = '🔍 Источник: ' + (meta.sourceUrl
+          ? '<a href="' + meta.sourceUrl + '" target="_blank" rel="noreferrer"></a>'
+          : '<span></span>');
+        (src.querySelector('a') || src.querySelector('span')).textContent = meta.source;
+        descEl.appendChild(src);
+      }
+    }
     tasksEl.appendChild(article);
 
     const outputEl = article.querySelector('.task-output');

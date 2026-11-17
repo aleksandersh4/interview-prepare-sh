@@ -2,22 +2,38 @@
   {
     "file": "01-task.js",
     "title": "Задача 1. sleep(ms)",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `sleep(ms)`: возвращает промис, который выполнится через `ms` миллисекунд. Строку-заглушку `return Promise.resolve()` в теле — удали.",
+    "source": "sleep/delay — первый вопрос после теории промисов"
   },
   {
     "file": "02-task.js",
     "title": "Задача 2. Свой Promise.all",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `promiseAll(promises)` — свой `Promise.all`. Принимает массив, где могут быть и промисы, и обычные значения:\n\n- все выполнились → resolve с массивом результатов **в исходном порядке**\n- первый reject → сразу reject с этой ошибкой",
+    "source": "Полифилл Promise.all — есть в банках вопросов (frontend-interview-questions)",
+    "sourceUrl": "https://github.com/sumitsingh4411/frontend-interview-questions/blob/main/03-javascript/promise-polyfills-and-throttle-debounce.md"
   },
   {
     "file": "03-task.js",
     "title": "Задача 3. retry(fn, attempts, delayMs)",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `retry(fn, attempts, delayMs)` — повторы с паузой:\n\n1. вызвать `fn` (возвращает промис)\n2. успех → вернуть результат\n3. ошибка → подождать `delayMs` и повторить; попыток максимум `attempts`\n4. все провалились → reject с последней ошибкой",
+    "source": "Retry с паузой — реальная прод-задача, мидл+"
   },
   {
     "file": "04-task.js",
     "title": "Задача 4. mapWithLimit(items, fn, limit)",
-    "kind": "task"
+    "kind": "task",
+    "description": "Напиши `mapWithLimit(items, fn, limit)` — как `map`, но `fn` возвращает промис, и одновременно «в полёте» должно быть не больше `limit` вызовов. Результат — массив в порядке исходных элементов, а не в порядке завершения.",
+    "source": "Ограничение параллелизма — популярная задача мидл/сеньор"
+  },
+  {
+    "file": "07-task.js",
+    "title": "Задача 5. promisify",
+    "kind": "task",
+    "description": "Напиши `promisify(fn)` — превращает функцию с колбэком `(err, result)` в функцию, возвращающую промис. Колбэк — всегда последний аргумент исходной `fn`.\n\nОшибка в колбэке → `reject(err)`, иначе → `resolve(result)`.",
+    "source": "Промисификация — канон после колбэк-вопросов"
   },
   {
     "file": "05-demo.js",
@@ -28,5 +44,26 @@
     "file": "06-demo.js",
     "title": "Демо: ошибка проваливается до catch, после catch цепочка здорова",
     "kind": "demo"
+  },
+  {
+    "file": "08-task.js",
+    "title": "Задача 6. fetchJson с таймаутом",
+    "kind": "task",
+    "description": "Напиши `fetchJson(url, { timeoutMs, fetchImpl = fetch })` — реальный API-клиент:\n\n- ответ `ok` → распарсить и вернуть JSON\n- статус не 2xx (например 404) → reject, статус — в тексте ошибки\n- сервер молчит дольше `timeoutMs` → reject (`AbortController` + `AbortError`/`TimeoutError`)\n\nПараметр `fetchImpl` — dependency injection: тесты подменяют им сеть, а твой код с настоящим `fetch` идёт в прод. Попробовать вживую — демо «живой запрос» ниже.",
+    "source": "fetch + AbortController-таймаут — спрашивают на мидл+ («как отменить запрос»)"
+  },
+  {
+    "file": "09-task.js",
+    "title": "Задача 7. Фолбэк зеркал API",
+    "kind": "task",
+    "description": "Напиши `getFirstSuccessful(urls, fetchImpl)` — живучий клиент: запрашивает **все** адреса одновременно и резолвится данными **первого успешного** (JSON). Ошибки остальных игнорируются; если упали все — reject.\n\nПо сути — свой `Promise.any` из реальной жизни (зеркала/фолбэк CDN). `fetchImpl(url)` возвращает промис с `Response`.",
+    "source": "Фолбэк зеркал API — Promise.any из реальной жизни"
+  },
+  {
+    "file": "10-demo.js",
+    "title": "Демо: живой запрос к публичному API",
+    "kind": "demo",
+    "description": "Настоящий `fetch` в настоящий интернет: jsonplaceholder — учебное API, которое ведёт себя как продовое. Смотри статус, JSON и обработку ошибок.",
+    "source": "Живое публичное API: jsonplaceholder.typicode.com"
   }
 ]
