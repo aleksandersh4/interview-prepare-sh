@@ -9,14 +9,45 @@
   <header>
     <h1>JS — подготовка к собеседованиям</h1>
     <p class="subtitle">
-      Теория и вопросы — в <code>topics/*.md</code> · решения пишешь в <code>topics/*.js</code> — они выполняются здесь.
-      Правишь файл → Ctrl+S → F5.
+      Теория и вопросы — в <code>topics/*.md</code> (и на этой странице) · код пишешь прямо здесь
+      или в <code>topics/*.js</code> — «💾 В файл» синхронизирует оба варианта.
     </p>
   </header>
   <nav id="nav"></nav>
   <h2 id="topic-title"></h2>
-  <div id="sandbox"></div>
-  <div id="output"></div>
+
+  <main id="page-topic">
+    <details id="theory">
+      <summary>📖 Теория и вопросы по теме</summary>
+      <div id="theory-body" class="md"></div>
+    </details>
+
+    <section id="editor-pane">
+      <textarea id="editor" spellcheck="false" wrap="off" autocomplete="off"
+        autocapitalize="off" placeholder="Здесь появится код задач из topics/…"></textarea>
+      <div class="toolbar">
+        <button id="run-btn" class="primary" type="button">▶ Запустить <kbd>Ctrl+Enter</kbd></button>
+        <button id="save-btn" type="button">💾 В файл <kbd>Ctrl+S</kbd></button>
+        <button id="reload-btn" type="button" title="Перечитать topics/…js и выполнить">⟲ Из файла</button>
+      </div>
+      <div id="draft-banner" hidden>
+        В браузере остался черновик, отличный от файла.
+        <button id="take-file-btn" type="button">Взять файл</button>
+        <button id="take-draft-btn" type="button">Открыть черновик</button>
+      </div>
+      <div class="status"><span id="status-draft">черновик: —</span><span id="status-file">файл: —</span></div>
+    </section>
+
+    <section id="output-pane">
+      <div id="output"></div>
+      <div id="sandbox"></div>
+    </section>
+  </main>
+
+  <div id="home-hint" class="md" hidden></div>
+
+  <script src="vendor/marked.min.js"></script>
   <script src="runner.js"></script>
+  <script src="editor.js"></script>
 </body>
 </html>

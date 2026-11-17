@@ -88,16 +88,33 @@
   const titleEl = document.getElementById('topic-title');
   if (current && TOPICS.some(([id]) => id === current)) {
     titleEl.textContent = TOPICS.find(([id]) => id === current)[1];
-    const script = document.createElement('script');
-    script.src = 'topics/' + current + '.js';
-    script.onerror = () => line('fail', 'Не нашёлся файл topics/' + esc(current) + '.js');
-    script.onload = () => line('muted', '— файл выполнен: правь код → Ctrl+S → F5 —');
-    document.body.appendChild(script);
+    if (location.protocol === 'file:') {
+      // Старый режим: редактору нужен fetch локальных файлов, на file:// он недоступен
+      document.body.classList.add('filemode');
+      line('warn', 'Песочница с редактором работает по http: запусти «node serve.js» и открой http://127.0.0.1:8127.');
+      line('log', 'Сейчас старый режим: файл темы выполняется автоматически, решения — в topics/*.js через WebStorm.');
+      const script = document.createElement('script');
+      script.src = 'topics/' + current + '.js';
+      script.onerror = () => line('fail', 'Не нашёлся файл topics/' + esc(current) + '.js');
+      script.onload = () => line('muted', '— файл выполнен: правь код → Ctrl+S → F5 —');
+      document.body.appendChild(script);
+    }
+    // по http скрипт editor.js подключает редактор и делает стартовый прогон
   } else {
+    document.body.classList.add('home');
     titleEl.textContent = 'Как этим пользоваться';
-    line('log', '1. Теория и вопросы с собеседований — в файлах topics/*.md (в WebStorm открой как Markdown).');
-    line('log', '2. Задачи — в соседних topics/*.js: пиши реализацию вместо // TODO.');
-    line('log', '3. Открой тему в меню выше → сохрани .js (Ctrl+S) → обнови страницу (F5). Красные проверки позеленеют.');
-    line('log', '4. Решил — попроси у меня ревью, например: «проверь 02-scope-and-closures».');
+    document.getElementById('home-hint').hidden = false;
+    document.getElementById('home-hint').innerHTML =
+      '<ol>' +
+      '<li>Выбери тему в меню сверху.</li>' +
+      '<li>Разверни «📖 Теория и вопросы» — там конспект и вопросы с собеседований.</li>' +
+      '<li>Пиши решения прямо в редакторе слева (или в <code>topics/*.js</code> в WebStorm — они синхронны). ' +
+      '«▶ Запустить» выполняет код и показывает проверки: красное — не решено, зелёное — решено.</li>' +
+      '<li>«💾 В файл» (Ctrl+S) записывает код из редактора в настоящий <code>topics/NN-*.js</code> — ' +
+      'выбери существующий файл темы в диалоге, он перезапишется.</li>' +
+      '<li>Решил — попроси у меня ревью: «проверь 02-scope-and-closures».</li>' +
+      '</ol>' +
+      '<p>Песочница с редактором работает по http — если открыл файл с диска, запусти ' +
+      '<code>node serve.js</code> и открой <code>http://127.0.0.1:8127</code>.</p>';
   }
 })();
