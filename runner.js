@@ -1,12 +1,11 @@
-/* Раннер учебного стенда: хелперы для файлов тем + меню + автозапуск.
-   Хелперы доступны в topics/*.js как глобальные функции:
-     section(заголовок)          — заголовок блока задач
-     log(...значения)            — строка вывода (как console.log)
-     check(название, факт, ожид) — зелёная/красная проверка (deep equal)
-     tryRun(() => выражение)     — безопасно вычислить (падение = предупреждение, не крэш) */
+/* Раннер учебного стенда.
+   - makeHelpers(outputEl) — фабрика section/log/check/tryRun, привязанных к конкретному
+     элементу вывода (у каждой карточки задачи свой). Экспортируется в window для editor.js.
+   - Глобальные window.section/log/check/tryRun пишут в #output — нужны file://-режиму
+     (карточки грузятся <script>-цепочкой) и перехвату console.
+   - Меню тем TOPICS, загрузка темы, домашняя страница.
+   Контракты — см. CONTEXT.md. */
 (function () {
-  const output = document.getElementById('output');
-
   const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
 
   const fmt = (v) => {
@@ -20,14 +19,6 @@
     try { return JSON.stringify(v) ?? String(v); } catch { return String(v); }
   };
 
-  const line = (cls, html) =>
-    output.insertAdjacentHTML('beforeend', '<div class="line ' + cls + '">' + html + '</div>');
-
-  window.section = (title) =>
-    output.insertAdjacentHTML('beforeend', '<h2 class="section">' + esc(title) + '</h2>');
-
-  window.log = (...args) => line('log', args.map((a) => esc(fmt(a))).join(' '));
-
   function deepEqual(a, b) {
     if (Number.isNaN(a) && Number.isNaN(b)) return true;
     if (a === b) return true;
@@ -38,33 +29,55 @@
     return ka.every((k) => deepEqual(a[k], b[k]));
   }
 
-  window.check = (label, actual, expected) => {
-    const ok = deepEqual(actual, expected);
-    const hint = !ok && actual === undefined
-      ? '<span class="hint"> — получено undefined: функция ещё не написана?</span>'
-      : '';
-    line(ok ? 'ok' : 'fail',
-      (ok ? '✔ ' : '✘ ') + esc(label) + hint + (ok ? '' :
-        '<br>   получено:   ' + esc(fmt(actual)) +
-        '<br>   ожидалось: ' + esc(fmt(expected))));
-  };
+  function makeHelpers(outputEl) {
+    const line = (cls, html) =>
+      outputEl.insertAdjacentHTML('beforeend', '<div class="line ' + cls + '">' + html + '</div>');
+    return {
+      section: (title) =>
+        outputEl.insertAdjacentHTML('beforeend', '<div class="section">' + esc(title) + '</div>'),
+      log: (...args) => line('log', args.map((a) => esc(fmt(a))).join(' ')),
+      check: (label, actual, expected) => {
+        const ok = deepEqual(actual, expected);
+        const hint = !ok && actual === undefined
+          ? '<span class="hint"> — получено undefined: функция ещё не написана?</span>'
+          : '';
+        line(ok ? 'ok' : 'fail',
+          (ok ? '✔ ' : '✘ ') + esc(label) + hint + (ok ? '' :
+            '<br>   получено:   ' + esc(fmt(actual)) +
+            '<br>   ожидалось: ' + esc(fmt(expected))));
+      },
+      tryRun: (fn, fallback) => {
+        try { return fn(); } catch (e) { line('warn', '⚠ ' + esc(fmt(e))); return fallback; }
+      },
+    };
+  }
+  window.makeHelpers = makeHelpers;
 
-  window.tryRun = (fn, fallback) => {
-    try { return fn(); } catch (e) { line('warn', '⚠ ' + esc(fmt(e))); return fallback; }
-  };
+  // Глобальные хелперы → #output (file://-режим и перехват console)
+  const globalOut = document.getElementById('output');
+  const g = makeHelpers(globalOut);
+  window.section = g.section;
+  window.log = g.log;
+  window.check = g.check;
+  window.tryRun = g.tryRun;
 
-  // Перехват console.*, чтобы «предскажи вывод» можно было делать привычным console.log
   ['log', 'info', 'warn', 'error'].forEach((level) => {
     const orig = console[level].bind(console);
     console[level] = (...args) => {
-      line(level === 'log' ? 'log' : level, args.map((a) => esc(fmt(a))).join(' '));
+      const line = document.createElement('div');
+      line.className = 'line ' + (level === 'log' ? 'log' : level);
+      line.textContent = args.map(fmt).join(' ');
+      globalOut.appendChild(line);
       orig(...args);
     };
   });
-
-  window.addEventListener('error', (e) => line('fail', '⛔ ' + esc(e.message)));
-  window.addEventListener('unhandledrejection', (e) =>
-    line('fail', '⛔ Необработанный reject: ' + esc(fmt(e.reason))));
+  window.addEventListener('error', (e) => {
+    globalOut.insertAdjacentHTML('beforeend', '<div class="line fail">⛔ ' + esc(e.message) + '</div>');
+  });
+  window.addEventListener('unhandledrejection', (e) => {
+    globalOut.insertAdjacentHTML('beforeend',
+      '<div class="line fail">⛔ Необработанный reject: ' + esc(fmt(e.reason)) + '</div>');
+  });
 
   const TOPICS = [
     ['01-types-and-coercion',     '01 · Типы и приведение'],
@@ -85,21 +98,36 @@
       '<a class="topic-link' + (id === current ? ' active' : '') + '" href="?topic=' + id + '">' + esc(title) + '</a>')
     .join('');
 
+  // file://: fetch недоступен — карточки грузим по одной <script>-цепочкой по номерам
+  const injectScript = (src) => new Promise((resolve) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = () => resolve(true);
+    s.onerror = () => resolve(false);
+    document.body.appendChild(s);
+  });
+  async function loadCardsLegacy(id) {
+    outer: for (let n = 1; n <= 40; n++) {
+      const base = String(n).padStart(2, '0');
+      for (const name of [`${base}-task.js`, `${base}-demo.js`]) {
+        if (await injectScript(`topics/${id}/${name}`)) continue outer;
+      }
+      break;
+    }
+    globalOut.insertAdjacentHTML('beforeend', '<div class="line muted">— конец темы —</div>');
+  }
+
   const titleEl = document.getElementById('topic-title');
   if (current && TOPICS.some(([id]) => id === current)) {
     titleEl.textContent = TOPICS.find(([id]) => id === current)[1];
     if (location.protocol === 'file:') {
-      // Старый режим: редактору нужен fetch локальных файлов, на file:// он недоступен
       document.body.classList.add('filemode');
-      line('warn', 'Песочница с редактором работает по http: запусти «node serve.js» и открой http://127.0.0.1:8127.');
-      line('log', 'Сейчас старый режим: файл темы выполняется автоматически, решения — в topics/*.js через WebStorm.');
-      const script = document.createElement('script');
-      script.src = 'topics/' + current + '.js';
-      script.onerror = () => line('fail', 'Не нашёлся файл topics/' + esc(current) + '.js');
-      script.onload = () => line('muted', '— файл выполнен: правь код → Ctrl+S → F5 —');
-      document.body.appendChild(script);
+      globalOut.hidden = false;
+      g.log('warn', 'Песочница с карточками работает по http: запусти «node serve.js» и открой http://127.0.0.1:8127.');
+      g.log('log', 'Сейчас старый режим: карточки темы выполняются по очереди, решения — в topics/' + current + '/ через WebStorm.');
+      loadCardsLegacy(current);
     }
-    // по http скрипт editor.js подключает редактор и делает стартовый прогон
+    // по http карточки строит editor.js
   } else {
     document.body.classList.add('home');
     titleEl.textContent = 'Как этим пользоваться';
@@ -107,14 +135,14 @@
     document.getElementById('home-hint').innerHTML =
       '<ol>' +
       '<li>Выбери тему в меню сверху.</li>' +
-      '<li>Разверни «📖 Теория и вопросы» — там конспект и вопросы с собеседований.</li>' +
-      '<li>Пиши решения прямо в редакторе слева (или в <code>topics/*.js</code> в WebStorm — они синхронны). ' +
-      '«▶ Запустить» выполняет код и показывает проверки: красное — не решено, зелёное — решено.</li>' +
-      '<li>«💾 В файл» (Ctrl+S) записывает код из редактора в настоящий <code>topics/NN-*.js</code> — ' +
-      'выбери существующий файл темы в диалоге, он перезапишется.</li>' +
+      '<li>Разверни «📖 Теория и вопросы» — конспект и вопросы с собеседований.</li>' +
+      '<li>Каждая задача — отдельная карточка: слева код (пиши между маркерами ' +
+      '<b>«▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ»</b>), справа её проверки. «▶ Запустить» — зелёное значит решено.</li>' +
+      '<li>«📁 Папка темы» — один раз укажи папку темы, дальше «💾 В файл» на карточке ' +
+      'пишет прямо в <code>topics/NN-*/…-task.js</code> без диалогов.</li>' +
       '<li>Решил — попроси у меня ревью: «проверь 02-scope-and-closures».</li>' +
       '</ol>' +
-      '<p>Песочница с редактором работает по http — если открыл файл с диска, запусти ' +
+      '<p>Песочница работает по http — если открыл файл с диска, запусти ' +
       '<code>node serve.js</code> и открой <code>http://127.0.0.1:8127</code>.</p>';
   }
 })();

@@ -1,0 +1,27 @@
+[
+  {
+    "file": "01-task.js",
+    "title": "Задача 1. Свой new",
+    "kind": "task"
+  },
+  {
+    "file": "02-task.js",
+    "title": "Задача 2. Наследование на прототипах (ES5)",
+    "kind": "task"
+  },
+  {
+    "file": "03-task.js",
+    "title": "Задача 3. То же через class / extends",
+    "kind": "task"
+  },
+  {
+    "file": "04-task.js",
+    "title": "Задача 4. Свой instanceof",
+    "kind": "task"
+  },
+  {
+    "file": "05-demo.js",
+    "title": "Демо: где живут методы",
+    "kind": "demo"
+  }
+]

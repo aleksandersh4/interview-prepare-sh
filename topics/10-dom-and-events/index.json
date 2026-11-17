@@ -1,0 +1,27 @@
+[
+  {
+    "file": "01-task.js",
+    "title": "Задача 1. Делегирование списка",
+    "kind": "task"
+  },
+  {
+    "file": "02-task.js",
+    "title": "Задача 2. Счётчик: две кнопки, один обработчик",
+    "kind": "task"
+  },
+  {
+    "file": "03-task.js",
+    "title": "Задача 3. Debounce на input",
+    "kind": "task"
+  },
+  {
+    "file": "04-task.js",
+    "title": "Задача 4. CustomEvent с данными",
+    "kind": "task"
+  },
+  {
+    "file": "05-demo.js",
+    "title": "Демо: фазы и e.target",
+    "kind": "demo"
+  }
+]

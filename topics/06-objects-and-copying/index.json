@@ -1,0 +1,22 @@
+[
+  {
+    "file": "01-task.js",
+    "title": "Задача 1. deepClone",
+    "kind": "task"
+  },
+  {
+    "file": "02-task.js",
+    "title": "Задача 2. shallowEqual",
+    "kind": "task"
+  },
+  {
+    "file": "03-task.js",
+    "title": "Задача 3. mergeDeep",
+    "kind": "task"
+  },
+  {
+    "file": "04-demo.js",
+    "title": "Демо: ссылки и spread",
+    "kind": "demo"
+  }
+]

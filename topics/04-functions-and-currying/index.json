@@ -1,0 +1,27 @@
+[
+  {
+    "file": "01-task.js",
+    "title": "Задача 1. curry(fn)",
+    "kind": "task"
+  },
+  {
+    "file": "02-task.js",
+    "title": "Задача 2. sum с переменной глубиной",
+    "kind": "task"
+  },
+  {
+    "file": "03-task.js",
+    "title": "Задача 3. pipe и compose",
+    "kind": "task"
+  },
+  {
+    "file": "04-task.js",
+    "title": "Задача 4. average через arguments",
+    "kind": "task"
+  },
+  {
+    "file": "05-demo.js",
+    "title": "Мини-демо: fn.length и параметры по умолчанию",
+    "kind": "demo"
+  }
+]

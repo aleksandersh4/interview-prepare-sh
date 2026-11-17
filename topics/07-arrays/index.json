@@ -1,0 +1,37 @@
+[
+  {
+    "file": "01-task.js",
+    "title": "Задача 1. Свой map",
+    "kind": "task"
+  },
+  {
+    "file": "02-task.js",
+    "title": "Задача 2. Свой reduce",
+    "kind": "task"
+  },
+  {
+    "file": "03-task.js",
+    "title": "Задача 3. unique",
+    "kind": "task"
+  },
+  {
+    "file": "04-task.js",
+    "title": "Задача 4. flatten и flattenDeep",
+    "kind": "task"
+  },
+  {
+    "file": "05-task.js",
+    "title": "Задача 5. groupBy",
+    "kind": "task"
+  },
+  {
+    "file": "06-task.js",
+    "title": "Задача 6. chunk",
+    "kind": "task"
+  },
+  {
+    "file": "07-demo.js",
+    "title": "Демо: sort мутирует и сравнивает строки",
+    "kind": "demo"
+  }
+]

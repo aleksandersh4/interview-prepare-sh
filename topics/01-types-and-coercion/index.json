@@ -1,0 +1,22 @@
+[
+  {
+    "file": "01-task.js",
+    "title": "Задача 1. Свой Object.is",
+    "kind": "task"
+  },
+  {
+    "file": "02-task.js",
+    "title": "Задача 2. getType без сюрпризов",
+    "kind": "task"
+  },
+  {
+    "file": "03-task.js",
+    "title": "Задача 3. Головоломки: объясни каждый результат",
+    "kind": "task"
+  },
+  {
+    "file": "04-demo.js",
+    "title": "Бонус: проверь себя ещё раз",
+    "kind": "demo"
+  }
+]

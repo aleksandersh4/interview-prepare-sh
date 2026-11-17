@@ -9,8 +9,8 @@
   <header>
     <h1>JS — подготовка к собеседованиям</h1>
     <p class="subtitle">
-      Теория и вопросы — в <code>topics/*.md</code> (и на этой странице) · код пишешь прямо здесь
-      или в <code>topics/*.js</code> — «💾 В файл» синхронизирует оба варианта.
+      Теория и вопросы — в <code>topics/*/theory.md</code> (и на этой странице) ·
+      каждая задача — отдельная карточка: код слева, её проверки справа.
     </p>
   </header>
   <nav id="nav"></nav>
@@ -22,31 +22,26 @@
       <div id="theory-body" class="md"></div>
     </details>
 
-    <section id="editor-pane">
-      <textarea id="editor" spellcheck="false" wrap="off" autocomplete="off"
-        autocapitalize="off" placeholder="Здесь появится код задач из topics/…"></textarea>
-      <div class="toolbar">
-        <button id="run-btn" class="primary" type="button">▶ Запустить <kbd>Ctrl+Enter</kbd></button>
-        <button id="save-btn" type="button">💾 В файл <kbd>Ctrl+S</kbd></button>
-        <button id="reload-btn" type="button" title="Перечитать topics/…js и выполнить">⟲ Из файла</button>
-      </div>
-      <div id="draft-banner" hidden>
-        В браузере остался черновик, отличный от файла.
-        <button id="take-file-btn" type="button">Взять файл</button>
-        <button id="take-draft-btn" type="button">Открыть черновик</button>
-      </div>
-      <div class="status"><span id="status-draft">черновик: —</span><span id="status-file">файл: —</span></div>
-    </section>
+    <div class="topic-toolbar">
+      <button id="run-all-btn" class="primary" type="button">▶ Запустить всё</button>
+      <button id="bind-dir-btn" type="button">📁 Папка темы</button>
+      <span id="topic-status" class="status"></span>
+    </div>
+    <p class="editor-hint">
+      Код — внутри маркеров <b>«▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ ▼▼▼»</b>; ниже маркера «▲» — проверки, их не меняй.
+      ▶ — запуск карточки (Ctrl+Enter) · 💾 — записать файл (Ctrl+S) · 📁 — один раз указать папку темы,
+      дальше «💾» пишет файлы без диалогов. 👀 — демо: просто запусти и разбери вывод.
+    </p>
 
-    <section id="output-pane">
-      <div id="output"></div>
-      <div id="sandbox"></div>
-    </section>
+    <div id="tasks"></div>
+    <div id="output" hidden></div>
+    <div id="sandbox"></div>
   </main>
 
   <div id="home-hint" class="md" hidden></div>
 
   <script src="vendor/marked.min.js"></script>
+  <script src="vendor/codemirror.bundle.js"></script>
   <script src="runner.js"></script>
   <script src="editor.js"></script>
 </body>

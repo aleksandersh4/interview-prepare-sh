@@ -1,0 +1,32 @@
+[
+  {
+    "file": "01-task.js",
+    "title": "Задача 1. sleep(ms)",
+    "kind": "task"
+  },
+  {
+    "file": "02-task.js",
+    "title": "Задача 2. Свой Promise.all",
+    "kind": "task"
+  },
+  {
+    "file": "03-task.js",
+    "title": "Задача 3. retry(fn, attempts, delayMs)",
+    "kind": "task"
+  },
+  {
+    "file": "04-task.js",
+    "title": "Задача 4. mapWithLimit(items, fn, limit)",
+    "kind": "task"
+  },
+  {
+    "file": "05-demo.js",
+    "title": "Демо: последовательно vs параллельно",
+    "kind": "demo"
+  },
+  {
+    "file": "06-demo.js",
+    "title": "Демо: ошибка проваливается до catch, после catch цепочка здорова",
+    "kind": "demo"
+  }
+]

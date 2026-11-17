@@ -1,0 +1,22 @@
+[
+  {
+    "file": "01-demo.js",
+    "title": "Квиз 1. Предскажи порядок",
+    "kind": "demo"
+  },
+  {
+    "file": "02-demo.js",
+    "title": "Квиз 2. async/await vs .then vs setTimeout",
+    "kind": "demo"
+  },
+  {
+    "file": "03-demo.js",
+    "title": "Демо: занятый стек тормозит таймеры",
+    "kind": "demo"
+  },
+  {
+    "file": "04-demo.js",
+    "title": "Демо: микрозадачи опережают макрозадачи",
+    "kind": "demo"
+  }
+]

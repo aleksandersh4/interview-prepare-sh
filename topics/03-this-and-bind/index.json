@@ -1,0 +1,17 @@
+[
+  {
+    "file": "01-task.js",
+    "title": "Задача 1. Свой bind",
+    "kind": "task"
+  },
+  {
+    "file": "02-task.js",
+    "title": "Задача 2. Свой call",
+    "kind": "task"
+  },
+  {
+    "file": "03-demo.js",
+    "title": "Демо: потеря контекста",
+    "kind": "demo"
+  }
+]
