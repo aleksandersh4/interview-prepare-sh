@@ -1,9 +1,7 @@
 /* Раннер учебного стенда.
-   - makeHelpers(outputEl) — фабрика section/log/check/tryRun, привязанных к конкретному
-     элементу вывода (у каждой карточки задачи свой). Экспортируется в window для editor.js.
-   - Глобальные window.section/log/check/tryRun пишут в #output — нужны file://-режиму
-     (карточки грузятся <script>-цепочкой) и перехвату console.
-   - Меню тем TOPICS, загрузка темы, домашняя страница.
+   - makeHelpers(outputEl) — фабрика section/log/check/tryRun, привязанных к элементу вывода.
+   - Двухуровневая навигация: табы блоков (цвет технологии) + чипы тем.
+   - file://: карточки темы грузятся <script>-цепочкой по manifest-путям.
    Контракты — см. CONTEXT.md. */
 (function () {
   const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
@@ -79,26 +77,49 @@
       '<div class="line fail">⛔ Необработанный reject: ' + esc(fmt(e.reason)) + '</div>');
   });
 
-  const TOPICS = [
-    ['01-types-and-coercion',     '01 · Типы и приведение'],
-    ['02-scope-and-closures',     '02 · Скоуп и замыкания'],
-    ['03-this-and-bind',          '03 · this, call/apply/bind'],
-    ['04-functions-and-currying', '04 · Функции и каррирование'],
-    ['05-prototypes-and-classes', '05 · Прототипы и классы'],
-    ['06-objects-and-copying',    '06 · Объекты и копирование'],
-    ['07-arrays',                 '07 · Массивы'],
-    ['08-event-loop',             '08 · Событийный цикл'],
-    ['09-promises-and-async',     '09 · Promise и async/await'],
-    ['10-dom-and-events',         '10 · DOM и события'],
-  ];
+  /* ───────── Навигация: блоки → темы ───────── */
+  const BLOCKS = window.BLOCKS || [];
+  const findTopic = (slug) => {
+    for (const b of BLOCKS) {
+      const t = b.topics.find((x) => x.slug === slug);
+      if (t) return { block: b, topic: t };
+    }
+    return null;
+  };
+  window.__findTopic = findTopic;
 
-  const current = new URLSearchParams(location.search).get('topic');
-  document.getElementById('nav').innerHTML = TOPICS
-    .map(([id, title]) =>
-      '<a class="topic-link' + (id === current ? ' active' : '') + '" href="?topic=' + id + '">' + esc(title) + '</a>')
-    .join('');
+  const params = new URLSearchParams(location.search);
+  let topicParam = params.get('topic');
+  let blockParam = params.get('block');
 
-  // file://: fetch недоступен — карточки грузим по одной <script>-цепочкой по номерам
+  let current = topicParam ? findTopic(topicParam) : null;
+  if (!current && blockParam) {
+    const b = BLOCKS.find((x) => x.slug === blockParam);
+    current = b ? { block: b, topic: b.topics[0] } : null;
+  }
+  const activeBlock = current ? current.block : null;
+  window.CURRENT_BLOCK = activeBlock ? activeBlock.slug : null;
+
+  const blocksNav = document.getElementById('blocks-nav');
+  blocksNav.innerHTML = BLOCKS.map((b) => {
+    const active = activeBlock && b.slug === activeBlock.slug ? ' active' : '';
+    return '<a class="block-tab' + active + '" style="--c:' + b.color + '"'
+      + ' href="?block=' + b.slug + '"><span class="dot"></span>' + esc(b.title) + '</a>';
+  }).join('');
+
+  const topicsNav = document.getElementById('topics-nav');
+  topicsNav.hidden = !activeBlock;
+  if (activeBlock) {
+    topicsNav.style.setProperty('--c', activeBlock.color);
+    topicsNav.innerHTML = activeBlock.topics.map((t) => {
+      const active = current && t.slug === current.topic.slug ? ' active' : '';
+      const badge = t.hasTasks ? '' : '<sup class="theory-only" title="только теория">📖</sup>';
+      return '<a class="topic-chip' + active + '" href="?block=' + activeBlock.slug
+        + '&amp;topic=' + t.slug + '">' + esc(t.title) + badge + '</a>';
+    }).join('');
+  }
+
+  /* ───────── file://: цепочка карточек ───────── */
   const injectScript = (src) => new Promise((resolve) => {
     const s = document.createElement('script');
     s.src = src;
@@ -106,11 +127,11 @@
     s.onerror = () => resolve(false);
     document.body.appendChild(s);
   });
-  async function loadCardsLegacy(id) {
+  async function loadCardsLegacy(blockSlug, topicSlug) {
     outer: for (let n = 1; n <= 40; n++) {
       const base = String(n).padStart(2, '0');
       for (const name of [`${base}-task.js`, `${base}-demo.js`]) {
-        if (await injectScript(`topics/${id}/${name}`)) continue outer;
+        if (await injectScript(`blocks/${blockSlug}/${topicSlug}/${name}`)) continue outer;
       }
       break;
     }
@@ -118,14 +139,16 @@
   }
 
   const titleEl = document.getElementById('topic-title');
-  if (current && TOPICS.some(([id]) => id === current)) {
-    titleEl.textContent = TOPICS.find(([id]) => id === current)[1];
+  if (current) {
+    document.title = current.topic.title + ' · JS/Angular собеседования';
+    titleEl.style.setProperty('--c', current.block.color);
+    titleEl.textContent = current.topic.title;
     if (location.protocol === 'file:') {
       document.body.classList.add('filemode');
       globalOut.hidden = false;
       g.log('warn', 'Песочница с карточками работает по http: запусти «node serve.js» и открой http://127.0.0.1:8127.');
-      g.log('log', 'Сейчас старый режим: карточки темы выполняются по очереди, решения — в topics/' + current + '/ через WebStorm.');
-      loadCardsLegacy(current);
+      g.log('log', 'Сейчас старый режим: карточки темы выполняются по очереди, решения — в файлах темы через WebStorm.');
+      loadCardsLegacy(current.block.slug, current.topic.slug);
     }
     // по http карточки строит editor.js
   } else {
@@ -134,15 +157,14 @@
     document.getElementById('home-hint').hidden = false;
     document.getElementById('home-hint').innerHTML =
       '<ol>' +
-      '<li>Выбери тему в меню сверху.</li>' +
-      '<li>Разверни «📖 Теория и вопросы» — конспект и вопросы с собеседований.</li>' +
-      '<li>Каждая задача — отдельная карточка: слева код (пиши между маркерами ' +
-      '<b>«▼▼▼ ПИШИ СВОЙ КОД ЗДЕСЬ»</b>), справа её проверки. «▶ Запустить» — зелёное значит решено.</li>' +
-      '<li>«📁 Папка темы» — один раз укажи папку темы, дальше «💾 В файл» на карточке ' +
-      'пишет прямо в <code>topics/NN-*/…-task.js</code> без диалогов.</li>' +
-      '<li>Решил — попроси у меня ревью: «проверь 02-scope-and-closures».</li>' +
+      '<li>Сверху — <b>блоки</b> (по цветам технологий: JS — жёлтый, TypeScript — синий, RxJS — розовый, Angular — красный…). Выбери блок.</li>' +
+      '<li>Вторым рядом — <b>темы</b> блока: 📖 — только теория и вопросы, без 📖 — есть задачи с проверками.</li>' +
+      '<li>В теме с задачами: условие — в синем блоке, код пиши в функции-заготовке (маркер «▼▼▼»), ' +
+      '«▶ Запустить» (Ctrl+Enter) — проверки под кодом.</li>' +
+      '<li>«📁 Папка темы» — один раз привяжи папку темы, дальше «💾 В файл» пишет без диалогов.</li>' +
+      '<li>Решил — попроси ревью: «проверь 02-scope-and-closures» или «проверь меня: subjects».</li>' +
       '</ol>' +
-      '<p>Песочница работает по http — если открыл файл с диска, запусти ' +
-      '<code>node serve.js</code> и открой <code>http://127.0.0.1:8127</code>.</p>';
+      '<p>Полный режим — по http: <code>node serve.js</code> → <code>http://127.0.0.1:8127</code>. ' +
+      'Карта всех вопросов — в чек-листе и CONTEXT.md.</p>';
   }
 })();

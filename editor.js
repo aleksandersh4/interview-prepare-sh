@@ -4,7 +4,9 @@
    карточки: async-проверки дописывают результат в свою карточку. */
 (function () {
   const topic = new URLSearchParams(location.search).get('topic');
-  if (!topic || location.protocol === 'file:') return;
+  const block = window.CURRENT_BLOCK;
+  if (!topic || !block || location.protocol === 'file:') return;
+  const base = 'blocks/' + block + '/' + topic;
 
   const $ = (id) => document.getElementById(id);
   const tasksEl = $('tasks');
@@ -177,7 +179,7 @@
         }
       },
       async loadFromFile() {
-        const fresh = await fetchText('topics/' + topic + '/' + meta.file);
+        const fresh = await fetchText(base + '/' + meta.file);
         if (fresh === null) { sDraft.textContent = 'не удалось перечитать файл'; return; }
         setValue(fresh);
         fileText = fresh;
@@ -201,7 +203,7 @@
     article.addEventListener('mousedown', () => { activeCard = card; });
 
     (async () => {
-      fileText = await fetchText('topics/' + topic + '/' + meta.file);
+      fileText = await fetchText(base + '/' + meta.file);
       let draft = null;
       try { draft = localStorage.getItem(draftKey); } catch {}
       if (fileText !== null) {
@@ -233,7 +235,7 @@
   setInterval(updateAgg, 1500); // async-проверки дописываются с задержкой
 
   async function loadTheory() {
-    const md = await fetchText('topics/' + topic + '/theory.md');
+    const md = await fetchText(base + '/theory.md');
     if (md && window.marked) {
       $('theory-body').innerHTML = window.marked.parse(md);
       $('theory-body').querySelectorAll('a[href]').forEach((a) => {
@@ -250,11 +252,20 @@
     loadTheory();
     let manifest = null;
     try {
-      const r = await fetch('topics/' + topic + '/index.json');
+      const r = await fetch(base + '/index.json');
       if (r.ok) manifest = await r.json();
     } catch {}
     if (!Array.isArray(manifest)) {
-      tasksEl.innerHTML = '<p class="line warn">Не нашёлся topics/' + topic + '/index.json.</p>';
+      tasksEl.innerHTML = '<p class="line warn">Не нашёлся ' + base + '/index.json.</p>';
+      return;
+    }
+    if (!manifest.length) {
+      // теоретическая тема: карточек нет — только конспект и вопросы
+      document.querySelector('.topic-toolbar').style.display = 'none';
+      document.querySelector('.editor-hint').style.display = 'none';
+      tasksEl.innerHTML =
+        '<div class="theory-note">📖 В этой теме пока только теория и вопросы — открой «Теория и вопросы» выше. '
+        + 'Задачи с проверками добавим по мере подготовки: попроси ассистента «добавь задачи: ' + topic + '».</div>';
       return;
     }
     cards = manifest.map(makeCard);

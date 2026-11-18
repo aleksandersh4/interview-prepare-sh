@@ -5,7 +5,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = join(fileURLToPath(new URL('../topics/', import.meta.url)));
+const root = join(fileURLToPath(new URL('../blocks/', import.meta.url)));
 
 function makeEl() {
   const el = {
@@ -50,17 +50,19 @@ const helpers = { section: noop, log: noop, check: noop, tryRun: (fn) => fn() };
 
 let checked = 0;
 let failures = 0;
-for (const topic of readdirSync(root, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name)) {
-  for (const file of readdirSync(join(root, topic)).filter((f) => /^[0-9].*\.js$/.test(f)).sort()) {
-    const code = readFileSync(join(root, topic, file), 'utf8');
-    checked++;
-    try {
-      new Function('section', 'log', 'check', 'tryRun', code)(
-        helpers.section, helpers.log, helpers.check, helpers.tryRun);
-    } catch (e) {
-      if (e instanceof ReferenceError) {
-        failures++;
-        console.log(`✘ ${topic}/${file}: ${e.message}`);
+for (const block of readdirSync(root, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name)) {
+  for (const topic of readdirSync(join(root, block), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name)) {
+    for (const file of readdirSync(join(root, block, topic)).filter((f) => /^[0-9].*\.js$/.test(f)).sort()) {
+      const code = readFileSync(join(root, block, topic, file), 'utf8');
+      checked++;
+      try {
+        new Function('section', 'log', 'check', 'tryRun', code)(
+          helpers.section, helpers.log, helpers.check, helpers.tryRun);
+      } catch (e) {
+        if (e instanceof ReferenceError) {
+          failures++;
+          console.log(`✘ ${block}/${topic}/${file}: ${e.message}`);
+        }
       }
     }
   }

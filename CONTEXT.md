@@ -44,34 +44,36 @@ _Обновлено: 2026-11-17. Этот файл — «выжимка памя
 ## 3. Структура
 
 ```
-index.html / style.css   — страница: меню тем, теория, тулбар темы, карточки задач, sandbox
-runner.js                — хелперы check/log/section/tryRun (фабрика на карточку),
-                           меню TOPICS, file://-цепочка, домашняя страница
-editor.js                — движок карточек: fetch index.json, CodeMirror per card,
+index.html / style.css   — страница: табы блоков (цвет технологии) + чипы тем, теория,
+                           тулбар темы, карточки задач, sandbox
+blocks-manifest.js       — СГЕНЕРИРОВАННЫЙ навигационный манифест (window.BLOCKS);
+                           после изменений структуры — node build/gen-manifest.mjs
+runner.js                — хелперы check/log/section/tryRun (фабрика makeHelpers),
+                           навигация (?block=&topic=; старый ?topic= совместим),
+                           file://-цепочка, домашняя страница
+editor.js                — движок карточек: fetch blocks/<блок>/<тема>/…, CodeMirror per card,
                            run per card / run all, автосейв, баннер черновика,
                            dir handle + сохранение, Ctrl+Enter/Ctrl+S
 serve.js                 — статический сервер (порт 8127), не нужен на file://
-vendor/                  — marked.min.js, codemirror.bundle.js (собран, не редактируется руками)
-build/                   — сборка CodeMirror (npm run build), annotate-stubs.mjs,
-                           extract-descriptions.mjs (условия → index.json),
-                           check-cards.mjs (самодостаточность — гонять после любых правок задач),
-                           add-new-tasks.mjs / migrate-to-folders.mjs / fix-selfcontained.mjs (одноразовые)
-topics/<NN-slug>/
-    theory.md            — теория + вопросы с собеседований (рендерится на странице)
-    index.json           — порядок карточек: [{file, title, kind: task|demo, description,
-                           source, sourceUrl?}]
-                           description — markdown-условие задачи, рендерится синим блоком
-                           НАД редактором (в редакторе условия нет — там только код и проверки)
-                           СТИЛЬ условий (юзер: «формулировки непонятны — сделай понятнее»):
-                           первая строка «Напиши `имя(...)` — суть»; затем при необходимости
-                           примеры «вход → выход» списком; «Подсказка:» в конце. Без воды.
-                           source — откуда задача (обязателен): честная строка происхождения;
-                           sourceUrl — только ПРОВЕРЕННЫЕ ссылки (GreatFrontend, FrontPrep,
-                           банки вопросов на GitHub). Непроверенные URL не вешать.
-                           Проверенные ссылки — см. build/add-sources.mjs.
-    01-task.js …         — задача: маркеры + заготовка + проверки; имя = порядок + вид
-    0M-demo.js           — демо/квиз (без маркеров, только показать/объяснить)
+vendor/                  — marked.min.js, codemirror.bundle.js (собран, руками не правится)
+build/                   — сборка/миграции/проверки (см. §5)
+blocks/<block-slug>/
+    index.json           — {title, color, order}; color — цвет технологии
+                           (js #F7DF1E, angular #DD0031/#B3002A/#E23237, ts #3178C6,
+                           rxjs #D30175, web #E34F26, браузер #0891B2, oop #8B5CF6,
+                           arch #64748B, practice #16A34A)
+    <topic-slug>/        — тема = вопрос чек-листа; СЛАГИ ГЛОБАЛЬНО УНИКАЛЬНЫ
+                           (ключи черновиков localStorage и URL завязаны на них)
+        theory.md        — конспект: «Как отвечать (скелет) / Что могут спросить
+                           дополнительно / Красные флажки»
+        index.json       — карточки: [{file,title,kind,description,source,sourceUrl?}];
+                           [] = теоретическая тема (в UI помечается 📖, тулбар скрыт)
+        NN-task.js       — задача: маркер ▼▼▼ первой строкой внутри заготовки + проверки
 ```
+
+Стиль description/source и остальные контракты карточек — см. §4 и build/add-sources.mjs
+(проверенные ссылки — только там). Карта вопросов повторяет чек-лист пользователя
+(Angular middle/senior 2026, 104 вопроса, 11 блоков).
 
 ## 4. Контракты
 
@@ -102,11 +104,13 @@ topics/<NN-slug>/
 - CodeMirror: `cd build && npm install && npm run build` → `vendor/codemirror.bundle.js`
   (IIFE, `window.CMEditor = { EditorView, extensions }`). npm может потребовать
   `npm install-scripts approve esbuild`.
-- `node build/annotate-stubs.mjs` — (пере)расстановка маркеров после правки задач.
-- `node build/extract-descriptions.mjs` — вынос условий из комментариев кода в index.json.
+- `node build/gen-manifest.mjs` — **регенерирует blocks-manifest.js**; запускать после
+  добавления/переименования тем и блоков.
 - `node build/check-cards.mjs` — проверка самодостаточности всех карточек (гонять после ЛЮБЫХ правок задач).
-- `node build/migrate-to-folders.mjs`, `build/fix-selfcontained.mjs`, `build/add-new-tasks.mjs` —
-  одноразовые исторические миграции; оставлены для истории.
+- Исторические одноразовые: `migrate-to-blocks.mjs`, `gen-theory-*.mjs` (создание тем из чек-листа),
+  `migrate-to-folders.mjs`, `fix-selfcontained.mjs`, `add-new-tasks.mjs`, `add-sources.mjs`,
+  `rewrite-descriptions.mjs`, `relocate-markers.mjs`, `extract-descriptions.mjs`,
+  `annotate-stubs.mjs` (устарел — старый формат маркеров).
 
 ## 6. Цикл работы с ассистентом
 
